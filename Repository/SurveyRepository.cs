@@ -8,21 +8,18 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
 {
     private const long NoNextQuestion = -1;
 
-    public async Task<Question?> GetQuestion(long questionId, CancellationToken token)
-    {
-        if (context.Questions.Any())
-            return await context.Questions
-                                .Include(question => question.Answers)
-                                .FirstOrDefaultAsync(question => question.Id == questionId, token);
+    public async Task<Question?> GetQuestion(long questionId, CancellationToken token) =>
+        !context.Questions.Any()
+            ? null
+            : await context.Questions
+                           .Include(question => question.Answers)
+                           .FirstOrDefaultAsync(question => question.Id == questionId, token);
 
-        return null;
-    }
 
     public async Task<long?> SaveResult(long interviewId, long questionId, ICollection<long> answerIds,
                                         CancellationToken token)
     {
         var question = await GetQuestion(questionId, token);
-
 
         if (question == null)
             throw new QuestionException($"Question with id={questionId} not found.");
@@ -42,7 +39,8 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
                            AnswerId = id
                        };
 
-            throw new QuestionException($"Answer with id={id} does not correspond to the question with id={questionId}.");
+            throw new
+                QuestionException($"Answer with id={id} does not correspond to the question with id={questionId}.");
         }).ToList();
 
         await context.Results.AddRangeAsync(results, token);
