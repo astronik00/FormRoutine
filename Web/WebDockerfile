@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
+
+EXPOSE 8080
+
+WORKDIR /app
+
+COPY ../ .
+RUN dotnet restore
+RUN dotnet build
+RUN dotnet publish Web/Web.csproj -c Release -o /publish
+
+WORKDIR /publish
+
+ENTRYPOINT ["dotnet", "Web.dll"]

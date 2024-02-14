@@ -1,0 +1,30 @@
+services:
+  survey-api:
+    depends_on:
+      - db
+    image: surveyapi
+    build:
+      context: .
+      dockerfile: Web/WebDockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
+  db:
+    image: surveydb
+    build:
+      context: .
+      dockerfile: PostgresDockerfile
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
