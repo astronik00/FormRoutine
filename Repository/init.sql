@@ -1,3 +1,5 @@
+--- Создание БД
+
 create extension if not exists pg_trgm;
 
 --- Информация о человеке
@@ -44,7 +46,7 @@ create table if not exists interview
     end_time   timestamptz,
     PRIMARY KEY (id),
     FOREIGN KEY (survey_id) REFERENCES survey (id),
-    FOREIGN KEY (survey_id) REFERENCES person (id)
+    FOREIGN KEY (person_id) REFERENCES person (id)
 );
 
 create index if not exists idx_interview_survey_id ON interview (survey_id);
@@ -94,27 +96,32 @@ create index if not exists idx_result_answer_id ON result (answer_id);
 
 
 --- Популяция БД
-INSERT INTO public.person (email)
-VALUES ('test@mail.ru');
+INSERT INTO public.person (email) VALUES ('test@mail.ru');
+INSERT INTO public.person (email) VALUES ('user@mail.ru');
+INSERT INTO public.person (email) VALUES ('admin@mail.ru');
 
-INSERT INTO public.category (name)
-VALUES ('Тест');
-INSERT INTO public.category (name)
-VALUES ('Срочные');
-INSERT INTO public.category (name)
-VALUES ('Свалка');
+
+INSERT INTO public.category (name) VALUES ('Тест');
+INSERT INTO public.category (name) VALUES ('Общие');
+
 
 INSERT INTO public.survey (name, category_id, question_number, description, active, only_once)
 VALUES ('Моя первая анкета', 1, 2, 'Тестовая анкета', true, false);
 
+
 INSERT INTO public.question (survey_id, orderNo, mandatory, allowed_many_answers, name)
 VALUES (1, 1, true, false, 'Из какого Вы города?');
-
 INSERT INTO public.question (survey_id, orderNo, mandatory, allowed_many_answers, name)
 VALUES (1, 2, true, false, 'Вы любите С#?');
 
+
 INSERT INTO public.interview (survey_id, person_id, start_time, end_time)
-VALUES (1, 1, '2024-02-12 20:47:09.620000 +00:00', null);
+VALUES (1, 1, current_timestamp, null);
+INSERT INTO public.interview (survey_id, person_id, start_time, end_time)
+VALUES (1, 2, current_timestamp, null);
+INSERT INTO public.interview (survey_id, person_id, start_time, end_time)
+VALUES (1, 3, current_timestamp, null);
+
 
 INSERT INTO public.answer (question_id, content)
 VALUES (1, 'Санкт-Петербург');
@@ -126,4 +133,10 @@ INSERT INTO public.answer (question_id, content)
 VALUES (2, 'Да');
 INSERT INTO public.answer (question_id, content)
 VALUES (2, 'Нет');
+
+
+INSERT INTO public.result (interview_id, answer_id) VALUES (1, 3);
+INSERT INTO public.result (interview_id, answer_id) VALUES (1, 4);
+INSERT INTO public.result (interview_id, answer_id) VALUES (2, 1);
+INSERT INTO public.result (interview_id, answer_id) VALUES (2, 5);
 

@@ -5,7 +5,7 @@ services:
     image: surveyapi
     build:
       context: .
-      dockerfile: Web/WebDockerfile
+      dockerfile: WebDockerfile
     ports:
       - 8080:8080
     networks:

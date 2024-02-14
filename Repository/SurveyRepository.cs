@@ -25,7 +25,7 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
 
 
         if (question == null)
-            throw new QuestionException($"Question with id {questionId} not found.");
+            throw new QuestionException($"Question with id={questionId} not found.");
 
         if (!question.AllowedManyAnswers && answerIds.Count > 1)
             throw new QuestionException("Violation of question constraint. Only one answer is allowed.");
@@ -34,12 +34,16 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
             throw new QuestionException("Violation of question constraint. Question is mandatory.");
 
         var results = answerIds.Select(id =>
-                                           new Result
-                                           {
-                                               InterviewId = interviewId,
-                                               AnswerId = id
-                                           }
-                                      ).ToList();
+        {
+            if (question.Answers.Any(answer => answer.Id == id))
+                return new Result
+                       {
+                           InterviewId = interviewId,
+                           AnswerId = id
+                       };
+
+            throw new QuestionException($"Answer with id={id} does not correspond to the question with id={questionId}.");
+        }).ToList();
 
         await context.Results.AddRangeAsync(results, token);
         await context.SaveChangesAsync(token);

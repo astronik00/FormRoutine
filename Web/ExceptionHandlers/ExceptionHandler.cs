@@ -17,6 +17,7 @@ public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHand
 
         if (e is QuestionException)
         {
+            ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
             messageTitle = "Bad Request";
             messageStatusCode = StatusCodes.Status400BadRequest;
         }
