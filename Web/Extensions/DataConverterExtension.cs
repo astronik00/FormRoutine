@@ -3,9 +3,15 @@ using Web.Responses;
 
 namespace Web.Extensions;
 
+/// <summary>
+/// Класс для преобразования классов-сущностей в response
+/// </summary>
 public static class DataConverterExtension
 {
-    public static QuestionResponse? ToQuestionResponse(this Question question)
+    /// <summary>
+    /// Преобразует вопрос в response
+    /// </summary>
+    public static QuestionResponse ToQuestionResponse(this Question question)
     {
         return new QuestionResponse
                {
@@ -19,6 +25,9 @@ public static class DataConverterExtension
                };
     }
 
+    /// <summary>
+    /// Преобразует ответ в response
+    /// </summary>
     public static AnswerResponse ToAnswersResponse(this Answer answer)
     {
         return new AnswerResponse

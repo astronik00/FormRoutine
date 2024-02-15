@@ -2,6 +2,9 @@
 
 namespace Repository.Options;
 
+/// <summary>
+/// Данные подключения к БД
+/// </summary>
 public class DbConnectionOptions
 {
     /// <summary>

@@ -5,6 +5,10 @@ using Npgsql;
 
 namespace Web.ExceptionHandlers;
 
+/// <summary>
+/// Менеджер ошибок
+/// </summary>
+/// <param name="logger"> Логгер </param>
 public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext ctx, Exception e, CancellationToken token)

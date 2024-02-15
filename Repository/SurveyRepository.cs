@@ -6,8 +6,12 @@ namespace Repository;
 
 public sealed class SurveyRepository(ApplicationContext context) : ISurveyRepository
 {
-    private const long NoNextQuestion = -1;
-
+    /// <summary>
+    /// Получение данных вопроса
+    /// </summary>
+    /// <param name="questionId"> Идентификатор вопроса </param>
+    /// <param name="token"> Токен отмены </param>
+    /// <returns> Вопрос с заданным идентификатором </returns>
     public async Task<Question?> GetQuestion(long questionId, CancellationToken token) =>
         !context.Questions.Any()
             ? null
@@ -15,7 +19,14 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
                            .Include(question => question.Answers)
                            .FirstOrDefaultAsync(question => question.Id == questionId, token);
 
-
+    /// <summary>
+    /// Сохранение результатов и получение следующего вопроса
+    /// </summary>
+    /// <param name="interviewId"> Идентификатор сессии </param>
+    /// <param name="questionId"> Идентификатор вопроса </param>
+    /// <param name="answerIds"> Список идентификаторов выбранных ответов</param>
+    /// <param name="token"> Токен отмены </param>
+    /// <returns> Идентификатор следующего вопроса </returns>
     public async Task<long?> SaveResult(long interviewId, long questionId, ICollection<long> answerIds,
                                         CancellationToken token)
     {
@@ -54,6 +65,6 @@ public sealed class SurveyRepository(ApplicationContext context) : ISurveyReposi
                                                                  x.OrderNo == question.OrderNo + 1,
                                                              token);
 
-        return nextQuestion?.Id ?? NoNextQuestion;
+        return nextQuestion?.Id;
     }
 }

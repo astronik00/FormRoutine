@@ -5,9 +5,12 @@ using Repository.Options;
 
 namespace Repository;
 
-public class ApplicationContext : DbContext
+/// <summary>
+/// Класс, предоставляющий контекст БД
+/// </summary>
+public class ApplicationContext(IOptions<DbConnectionOptions> dbConnectionOptions) : DbContext
 {
-    private readonly DbConnectionOptions _options;
+    private readonly DbConnectionOptions _options = dbConnectionOptions.Value;
 
     public DbSet<Answer> Answers { get; set; }
 
@@ -20,11 +23,6 @@ public class ApplicationContext : DbContext
     public DbSet<Result> Results { get; set; }
 
     public DbSet<Survey> Surveys { get; set; }
-
-    public ApplicationContext(IOptions<DbConnectionOptions> dbConnectionOptions)
-    {
-        _options = dbConnectionOptions.Value;
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
